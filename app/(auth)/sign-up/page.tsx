@@ -1,17 +1,8 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import SignUp from "@/components/ui/auth/signup";
 
 function page() {
-  return (
-    <Card className="w-full max-w-md shadow-xl">
-      <CardHeader>
-        <CardTitle className="text-center text-2xl font-bold">
-          Welcome
-        </CardTitle>
-      </CardHeader>
-      <CardContent>sign up page</CardContent>
-    </Card>
-  );
+  return <SignUp />;
 }
 
 export default page;
