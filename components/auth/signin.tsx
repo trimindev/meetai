@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { AlertCircleIcon, Loader2 } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
+import Logo from "../icons/logo";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -298,13 +299,7 @@ export default function SignIn() {
 
         {/* Right: Branding / Image */}
         <div className="w-full h-full hidden md:flex flex-col gap-y-2 bg-neutral-900 items-center justify-center">
-          <Image
-            src="/logo.svg"
-            alt="Meet AI"
-            width={80}
-            height={80}
-            className="object-contain"
-          />
+          <Logo />
           <h2 className="text-white text-3xl font-semibold">Meet AI</h2>
         </div>
       </Card>
