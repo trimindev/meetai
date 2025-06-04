@@ -20,7 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { AlertCircleIcon, Loader2 } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import Logo from "../icons/logo";
+import Logo from "@/components/icons/Logo";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email"),

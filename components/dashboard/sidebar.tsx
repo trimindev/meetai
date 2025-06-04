@@ -31,7 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Logo from "../icons/logo";
+import Logo from "../icons/Logo";
 
 // First group - Main navigation
 const mainItems = [

@@ -1,4 +1,4 @@
-import SignIn from "@/components/auth/signin";
+import SignIn from "@/components/auth/SignIn";
 
 function page() {
   return <SignIn />;
