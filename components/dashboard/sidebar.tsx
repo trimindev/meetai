@@ -49,7 +49,7 @@ export function AppSidebar() {
       <SidebarContent>
         {/* Logo Section */}
         <SidebarGroup>
-          <SidebarGroupLabel className="mb-4">
+          <SidebarGroupLabel>
             <div className="flex items-center">
               <Logo color="#000000" width={40} height={40} />
               <h1 className="ml-2 text-lg font-semibold text-primary">
@@ -63,9 +63,6 @@ export function AppSidebar() {
 
         {/* Main Navigation Group */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sm font-medium text-muted-foreground">
-            Navigation
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainItems.map((item) => {
@@ -82,9 +79,6 @@ export function AppSidebar() {
                             : "text-muted-foreground hover:text-foreground"
                         }
                       `}
-                      style={{
-                        borderLeftColor: isActive ? item.color : "transparent",
-                      }}
                     >
                       <a href={item.url} className="flex items-center gap-3">
                         <item.icon
@@ -100,12 +94,6 @@ export function AppSidebar() {
                         >
                           {item.title}
                         </span>
-                        {isActive && (
-                          <div
-                            className="ml-auto w-2 h-2 rounded-full"
-                            style={{ backgroundColor: item.color }}
-                          />
-                        )}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -119,9 +107,6 @@ export function AppSidebar() {
 
         {/* Premium Group */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sm font-medium text-muted-foreground">
-            Premium
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {premiumItems.map((item) => {
@@ -138,9 +123,6 @@ export function AppSidebar() {
                             : "text-muted-foreground hover:text-amber-700"
                         }
                       `}
-                      style={{
-                        borderLeftColor: isActive ? item.color : "transparent",
-                      }}
                     >
                       <a href={item.url} className="flex items-center gap-3">
                         <item.icon
@@ -156,12 +138,6 @@ export function AppSidebar() {
                         >
                           {item.title}
                         </span>
-                        {isActive && (
-                          <div
-                            className="ml-auto w-2 h-2 rounded-full"
-                            style={{ backgroundColor: item.color }}
-                          />
-                        )}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
