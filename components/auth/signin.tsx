@@ -54,7 +54,7 @@ export default function SignIn() {
         {
           email: data.email,
           password: data.password,
-          callbackURL: "/dashboard", // Redirect after successful login
+          callbackURL: "/", // Redirect after successful login
         },
         {
           onRequest: () => {
