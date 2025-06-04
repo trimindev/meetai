@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
 
 import {
   Form,
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { AlertCircleIcon } from "lucide-react";
+import { AlertCircleIcon, Loader2 } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
 const signInSchema = z.object({
@@ -31,6 +31,8 @@ type SignInData = z.infer<typeof signInSchema>;
 export default function SignIn() {
   // State for capturing and displaying server-side errors
   const [serverError, setServerError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSocialLoading, setIsSocialLoading] = useState<string | null>(null);
 
   // Initialize react-hook-form with validation schema using zodResolver
   const form = useForm<SignInData>({
@@ -41,43 +43,103 @@ export default function SignIn() {
     },
   });
 
-  // Form submission handler
+  // Form submission handler with authClient integration
   const onSubmit = async (data: SignInData) => {
     setServerError(null); // Clear previous errors before submission
+    setIsSubmitting(true);
+
     try {
-      // Simulate API call to sign in
-      const res = await fakeSignInApi(data);
-      if (!res.ok) {
-        throw new Error(res.message || "Unknown server error");
-      }
-      console.log("Submitted:", data);
-    } catch (error: Error | unknown) {
+      await authClient.signIn.email(
+        {
+          email: data.email,
+          password: data.password,
+          callbackURL: "/dashboard", // Redirect after successful login
+        },
+        {
+          onRequest: () => {
+            // Loading state is already handled by setIsSubmitting
+          },
+          onSuccess: () => {
+            console.log("Sign in successful");
+            // You can add additional success handling here
+            // The redirect will be handled automatically by callbackURL
+          },
+          onError: (ctx) => {
+            setServerError(ctx.error.message || "Sign in failed");
+          },
+        }
+      );
+    } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Server error occurred";
+        error instanceof Error ? error.message : "An unexpected error occurred";
       setServerError(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  // Fake API function to simulate server response
-  async function fakeSignInApi(data: SignInData) {
-    return new Promise<{ ok: boolean; message?: string }>((resolve) =>
-      setTimeout(
-        () =>
-          data.email === "test@example.com" && data.password === "password123"
-            ? resolve({ ok: true })
-            : resolve({ ok: false, message: "Invalid credentials" }),
-        1000
-      )
-    );
-  }
+  // Google sign-in handler
+  const handleGoogleSignIn = async () => {
+    setServerError(null);
+    setIsSocialLoading("google");
 
-  // Handlers for social login buttons
-  const handleGoogleSignIn = () => {
-    console.log("Google sign in clicked");
+    try {
+      await authClient.signIn.social(
+        {
+          provider: "google",
+          callbackURL: "/dashboard",
+        },
+        {
+          onRequest: () => {
+            // Loading state handled by setIsSocialLoading
+          },
+          onSuccess: () => {
+            console.log("Google sign in successful");
+          },
+          onError: (ctx) => {
+            setServerError(ctx.error.message || "Google sign in failed");
+          },
+        }
+      );
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Google sign in failed";
+      setServerError(errorMessage);
+    } finally {
+      setIsSocialLoading(null);
+    }
   };
 
-  const handleGitHubSignIn = () => {
-    console.log("GitHub sign in clicked");
+  // GitHub sign-in handler
+  const handleGitHubSignIn = async () => {
+    setServerError(null);
+    setIsSocialLoading("github");
+
+    try {
+      await authClient.signIn.social(
+        {
+          provider: "github",
+          callbackURL: "/dashboard",
+        },
+        {
+          onRequest: () => {
+            // Loading state handled by setIsSocialLoading
+          },
+          onSuccess: () => {
+            console.log("GitHub sign in successful");
+          },
+          onError: (ctx) => {
+            setServerError(ctx.error.message || "GitHub sign in failed");
+          },
+        }
+      );
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "GitHub sign in failed";
+      setServerError(errorMessage);
+    } finally {
+      setIsSocialLoading(null);
+    }
   };
 
   return (
@@ -108,7 +170,11 @@ export default function SignIn() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="you@example.com" {...field} />
+                        <Input
+                          placeholder="you@example.com"
+                          disabled={isSubmitting}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -126,6 +192,7 @@ export default function SignIn() {
                         <Input
                           type="password"
                           placeholder="••••••••"
+                          disabled={isSubmitting}
                           {...field}
                         />
                       </FormControl>
@@ -143,8 +210,19 @@ export default function SignIn() {
                 )}
 
                 {/* Submit button */}
-                <Button type="submit" className="w-full">
-                  Sign In
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Signing In...
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
               </form>
             </Form>
@@ -167,18 +245,38 @@ export default function SignIn() {
                 variant="outline"
                 onClick={handleGoogleSignIn}
                 type="button"
+                disabled={isSocialLoading !== null || isSubmitting}
                 className="flex items-center justify-center gap-2"
               >
-                <Image src="/google.svg" alt="Google" width={20} height={20} />
+                {isSocialLoading === "google" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Image
+                    src="/google.svg"
+                    alt="Google"
+                    width={20}
+                    height={20}
+                  />
+                )}
                 Google
               </Button>
               <Button
                 variant="outline"
                 onClick={handleGitHubSignIn}
                 type="button"
+                disabled={isSocialLoading !== null || isSubmitting}
                 className="flex items-center justify-center gap-2"
               >
-                <Image src="/github.svg" alt="Github" width={20} height={20} />
+                {isSocialLoading === "github" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Image
+                    src="/github.svg"
+                    alt="Github"
+                    width={20}
+                    height={20}
+                  />
+                )}
                 GitHub
               </Button>
             </div>
