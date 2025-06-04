@@ -82,7 +82,7 @@ export default function SignIn() {
 
   return (
     <div>
-      <Card className="w-full max-w-2xl min-h-80 grid grid-cols-1 md:grid-cols-2 overflow-hidden shadow-2xl py-0 mb-4">
+      <Card className="w-full max-w-3xl min-h-80 grid md:grid-cols-2 gap-0 overflow-hidden shadow-2xl py-0 mb-4">
         {/* Left: Sign-in Form */}
         <div className="p-6">
           <CardHeader className="mb-4">
