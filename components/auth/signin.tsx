@@ -29,8 +29,10 @@ const signInSchema = z.object({
 type SignInData = z.infer<typeof signInSchema>;
 
 export default function SignIn() {
+  // State for capturing and displaying server-side errors
   const [serverError, setServerError] = useState<string | null>(null);
 
+  // Initialize react-hook-form with validation schema using zodResolver
   const form = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -39,10 +41,11 @@ export default function SignIn() {
     },
   });
 
+  // Form submission handler
   const onSubmit = async (data: SignInData) => {
-    setServerError(null); // Clear previous server error
+    setServerError(null); // Clear previous errors before submission
     try {
-      // Replace with your actual API call
+      // Simulate API call to sign in
       const res = await fakeSignInApi(data);
       if (!res.ok) {
         throw new Error(res.message || "Unknown server error");
@@ -55,6 +58,7 @@ export default function SignIn() {
     }
   };
 
+  // Fake API function to simulate server response
   async function fakeSignInApi(data: SignInData) {
     return new Promise<{ ok: boolean; message?: string }>((resolve) =>
       setTimeout(
@@ -67,6 +71,7 @@ export default function SignIn() {
     );
   }
 
+  // Handlers for social login buttons
   const handleGoogleSignIn = () => {
     console.log("Google sign in clicked");
   };
@@ -77,10 +82,7 @@ export default function SignIn() {
 
   return (
     <div>
-      <Card
-        className="w-full max-w-2xl min-h-80 grid grid-cols-1 md:grid-cols-2 overflow-hidden shadow-2xl py-0 mb-4
-      "
-      >
+      <Card className="w-full max-w-2xl min-h-80 grid grid-cols-1 md:grid-cols-2 overflow-hidden shadow-2xl py-0 mb-4">
         {/* Left: Sign-in Form */}
         <div className="p-6">
           <CardHeader className="mb-4">
@@ -93,10 +95,12 @@ export default function SignIn() {
           </CardHeader>
           <CardContent className="space-y-4">
             <Form {...form}>
+              {/* React Hook Form wrapper with validation */}
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
               >
+                {/* Email input field */}
                 <FormField
                   control={form.control}
                   name="email"
@@ -111,6 +115,7 @@ export default function SignIn() {
                   )}
                 />
 
+                {/* Password input field */}
                 <FormField
                   control={form.control}
                   name="password"
@@ -129,7 +134,7 @@ export default function SignIn() {
                   )}
                 />
 
-                {/* Show alert only if there is a server error */}
+                {/* Server error alert */}
                 {serverError && (
                   <Alert variant="destructive">
                     <AlertCircleIcon className="h-4 w-4" />
@@ -137,6 +142,7 @@ export default function SignIn() {
                   </Alert>
                 )}
 
+                {/* Submit button */}
                 <Button type="submit" className="w-full">
                   Sign In
                 </Button>
@@ -161,6 +167,7 @@ export default function SignIn() {
                 variant="outline"
                 onClick={handleGoogleSignIn}
                 type="button"
+                className="flex items-center justify-center gap-2"
               >
                 <Image src="/google.svg" alt="Google" width={20} height={20} />
                 Google
@@ -169,12 +176,14 @@ export default function SignIn() {
                 variant="outline"
                 onClick={handleGitHubSignIn}
                 type="button"
+                className="flex items-center justify-center gap-2"
               >
                 <Image src="/github.svg" alt="Github" width={20} height={20} />
                 GitHub
               </Button>
             </div>
 
+            {/* Link to sign up page */}
             <div className="mt-4 text-center text-sm text-muted-foreground">
               <p>
                 Don&apos;t have an account?{" "}
@@ -201,6 +210,8 @@ export default function SignIn() {
           <h2 className="text-white text-3xl font-semibold">Meet AI</h2>
         </div>
       </Card>
+
+      {/* Terms and Privacy Policy disclaimer */}
       <div className="text-sm text-center text-muted-foreground">
         By clicking, you agree to our{" "}
         <a
