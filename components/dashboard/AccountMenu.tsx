@@ -55,7 +55,7 @@ export function AccountMenu({ userData }: AccountMenuProps) {
       await logoutPromise;
       // Wait a bit for user to see success message
       setTimeout(() => {
-        router.push("/login");
+        router.push("/sign-in");
         router.refresh();
       }, 1500);
     } catch (error) {

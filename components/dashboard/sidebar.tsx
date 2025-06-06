@@ -14,7 +14,7 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import Logo from "@/components/icons/Logo";
-import { AccountMenu } from "./AccountMenu"; // Import the new component
+import { AccountMenu } from "./AccountMenu";
 
 // First group - Main navigation
 const mainItems = [
