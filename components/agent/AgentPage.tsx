@@ -1,35 +1,23 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useTRPC } from "@/trpc/client";
-import LoadingState from "@/components/LoadingState";
-import ErrorState from "@/components/ErrorState";
+import LoadingState from "../LoadingState";
 
 function AgentPage() {
   const trpc = useTRPC();
-  const { data, isLoading, isError } = useQuery(
-    trpc.agent.getMany.queryOptions()
-  );
-
-  if (isLoading) {
-    return (
-      <LoadingState
-        title="Loading Agents"
-        describtion="Please wait while we fetch the latest list of agents."
-      />
-    );
-  }
-
-  if (isError) {
-    return (
-      <ErrorState
-        title="Failed to Load Agents"
-        description="We encountered an error while trying to fetch the list of agents. Please check your internet connection or try again later."
-      />
-    );
-  }
+  const { data } = useSuspenseQuery(trpc.agent.getMany.queryOptions());
 
   return <div>{JSON.stringify(data, null, 2)}</div>;
 }
 
 export default AgentPage;
+
+export const AgentLoadingState = () => {
+  return (
+    <LoadingState
+      title="Loading Agents"
+      description="Please wait while we fetch the agents."
+    />
+  );
+};
